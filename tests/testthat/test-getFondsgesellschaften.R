@@ -43,4 +43,5 @@ test_that("check if correct url is produced", {
   extractFG(htmlfile = testfile_provider)[1:2,] %>%
     expect_equal(extractFG_res)
 
+
 })
