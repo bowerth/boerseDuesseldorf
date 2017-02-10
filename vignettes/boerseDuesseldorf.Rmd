@@ -1,0 +1,31 @@
+---
+title: "boerseDuesseldorf"
+author: "Bo Werth"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{boerseDuesseldorf}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r init, echo=TRUE}
+library(boerseDuesseldorf)
+destdir_provider <- "../inst/extdata/provider"
+```
+
+```{r download_fg, eval=FALSE}
+## modes <- c("a", "b")
+modes <- c("1", letters)
+unlink(file.path(destdir_provider, "*"))
+getFG(modes = modes, destdir = destdir_provider)
+```
+
+```{r extract_fg, eval=TRUE, results="as.is"}
+htmlfiles <- list.files(destdir_provider)
+htmlfiles_relpath <- file.path(destdir_provider, htmlfiles)
+provider_list <-
+  lapply(htmlfiles_relpath, extractFG)
+provider_df <- do.call("rbind", provider_list)
+knitr::kable(provider_df[1:10,])
+```
