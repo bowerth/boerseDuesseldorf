@@ -11,7 +11,9 @@ vignette: >
 
 ```{r init, echo=TRUE}
 library(boerseDuesseldorf)
-destdir_provider <- "../inst/extdata/provider"
+## destdir_provider <- "../inst/extdata/provider"
+## for pkgdown
+destdir_provider <- system.file("extdata", "provider", package = "boerseDuesseldorf")
 ```
 
 ```{r download_fg, eval=FALSE}

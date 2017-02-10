@@ -1,12 +1,13 @@
 Package: boerseDuesseldorf
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Obtain financial information from Duesseldorf stack exchange.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Bo", "Werth", email = "bo.werth@gmail.com")
+Author: Bo Werth
+Maintainer: Bo Werth <bo.werth@gmail.com>
+Description: Scrape information from http://boerse-duesseldorf.de/
+    Such as list of wkns and providers.
+License: MIT
 Imports:
     curl,
     magrittr,
