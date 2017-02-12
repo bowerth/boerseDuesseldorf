@@ -16,11 +16,11 @@ library(tidyr)
 ## destdir_provider <- "../inst/extdata/provider"
 ## destdir_fonds <- "../inst/extdata/fonds"
 ## destdir_summary <- "../inst/extdata/summary"
-destdir_history <- "../inst/extdata/history"
+## destdir_history <- "../inst/extdata/history"
 ## export_file_provider <- "../inst/extdata/provider.tsv"
 ## export_file_fonds <- "../inst/extdata/fonds.tsv"
 ## export_file_summary <- "../inst/extdata/summary.rda"
-export_file_history <- "../inst/extdata/history.rda"
+## export_file_history <- "../inst/extdata/history-sample.rda"
 ## for pkgdown
 ## destdir_provider <- system.file("extdata", "provider", package = "boerseDuesseldorf")
 export_file_provider <-
@@ -29,6 +29,8 @@ export_file_fonds <-
   system.file("extdata", "fonds.tsv", package = "boerseDuesseldorf")
 export_file_summary <-
   system.file("extdata", "summary.rda", package = "boerseDuesseldorf")
+export_file_history <-
+  system.file("extdata", "history.rda", package = "boerseDuesseldorf")
 ```
 
 ```{r download_fg, eval=FALSE}
@@ -122,20 +124,7 @@ summary_df_sorted %>%
 getHistory(wkns = fonds_df_sorted$url, destdir = destdir_history)
 ```
 
-```{r extract_history, eval=FALSE, warning=FALSE}
-htmlfiles_history <- list.files(destdir_history)
-htmlfiles_history_relpath <- file.path(destdir_history, htmlfiles_history)
-history_list <-
-  lapply(htmlfiles_history_relpath, extractHistory)
-history_df <- do.call("rbind", history_list)
-history_df_sorted <-
-  history_df %>%
-  arrange(wkn, desc(date))
-save(history_df_sorted,
-     file = export_file_history)
-```
-
-```{r extract_history_mc, eval=TRUE}
+```{r extract_history_mc, eval=FALSE}
 ## https://cran.r-project.org/web/packages/doMC/vignettes/gettingstartedMC.pdf
 library(doMC)
 registerDoMC(4)
@@ -153,12 +142,7 @@ save(history_df_sorted,
      file = export_file_history)
 ```
 
-```{r extract_history_mpi, eval=FALSE}
-install.packages("Rmpi")
-install.packages("doMPI", dependencies=TRUE)
-library(doMPI)
-cl <- startMPIcluster(count=2)
-registerDoMPI(cl
-foreach(i=1:3) %dopar% sqrt(i)
-closeCluster(cl)
+```{r show_history, eval=TRUE, results="as.is"}
+load(file = export_file_history)
+knitr::kable(history_df_sorted[1:10, ])
 ```
