@@ -2,7 +2,10 @@
 title: "boerseDuesseldorf"
 author: "Bo Werth"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    fig_width: 7
+    fig_height: 5
 vignette: >
   %\VignetteIndexEntry{boerseDuesseldorf}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,6 +16,8 @@ vignette: >
 library(boerseDuesseldorf)
 library(dplyr)
 library(tidyr)
+library(xts)
+library(dygraphs)
 ## destdir_provider <- "../inst/extdata/provider"
 ## destdir_fonds <- "../inst/extdata/fonds"
 ## destdir_summary <- "../inst/extdata/summary"
@@ -20,7 +25,7 @@ library(tidyr)
 ## export_file_provider <- "../inst/extdata/provider.tsv"
 ## export_file_fonds <- "../inst/extdata/fonds.tsv"
 ## export_file_summary <- "../inst/extdata/summary.rda"
-## export_file_history <- "../inst/extdata/history-sample.rda"
+## export_file_history_sample <- "../inst/extdata/history-sample.rda"
 ## for pkgdown
 ## destdir_provider <- system.file("extdata", "provider", package = "boerseDuesseldorf")
 export_file_provider <-
@@ -29,8 +34,8 @@ export_file_fonds <-
   system.file("extdata", "fonds.tsv", package = "boerseDuesseldorf")
 export_file_summary <-
   system.file("extdata", "summary.rda", package = "boerseDuesseldorf")
-export_file_history <-
-  system.file("extdata", "history.rda", package = "boerseDuesseldorf")
+export_file_history_sample <-
+  system.file("extdata", "history-sample.rda", package = "boerseDuesseldorf")
 ```
 
 ```{r download_fg, eval=FALSE}
@@ -109,14 +114,17 @@ save(summary_df_sorted,
 
 ```{r show_summary, eval=TRUE, results="as.is"}
 load(file = export_file_summary)
-summary_df_sorted %>%
+summary_df_top <-
+  summary_df_sorted %>%
   tbl_df %>%
   filter(period %in% c("1y", "3y", "5y")) %>%
   filter(var %in% c("performance")) %>%
   select(wkn, var, period, value) %>%
   spread(key = period, value = "value") %>%
   arrange(desc(`5y`)) %>%
-  top_n(10) %>%
+  top_n(10)
+
+summary_df_top %>%
   knitr::kable()
 ```
 
@@ -142,7 +150,32 @@ save(history_df_sorted,
      file = export_file_history)
 ```
 
-```{r show_history, eval=TRUE, results="as.is"}
-load(file = export_file_history)
-knitr::kable(history_df_sorted[1:10, ])
+```{r subset_history, eval=FALSE}
+load(file = system.file("extdata", "history.rda", package = "boerseDuesseldorf"))
+## GreenEffects, Oekovision Classic C, Oekovision Oekotrust, New Energy
+own_wkn <- c("580265", "974968", "A0Q8NL", "581365")
+history_df_sorted_sample <-
+  history_df_sorted %>%
+  ## filter(wkn %in% summary_df_top[["wkn"]])
+  filter(wkn %in% own_wkn)
+save(history_df_sorted_sample, file = export_file_history_sample)
+```
+
+```{r history_table, eval=TRUE, results="as.is"}
+load(file = export_file_history_sample)
+knitr::kable(history_df_sorted_sample[1:10, ])
+```
+
+```{r history_chart_level, fig.height=4, eval=TRUE}
+history_xts <-
+  history_df_sorted_sample %>%
+  filter(var %in% c("open")) %>%
+  xtsHistory()
+history_xts %>%
+  dygraphs::dygraph(group = "stocks")
+```
+
+```{r history_chart_growth, eval=TRUE}
+history_xts %>% diff() %>%
+  dygraph(group = "stocks") %>% dyRoller(rollPeriod = 50)
 ```

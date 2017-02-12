@@ -23,19 +23,6 @@ extractHistory <- function(htmlfile) {
 
   wkn <- titleWkn(doc)
 
-  ## Sys.time()
-  ## history_table <-
-  ##   doc %>%
-  ##   rvest::html_table() %>%
-  ##   .[[1]]
-  ## Sys.time()
-
-  ## doc %>%
-  ## xml2::xml_find_all(".//table") %>%
-  ## xml2::xml_children() %>%
-  ## .[[2]] %>% # tbody
-  ## xml2::xml_contents()
-
   html_table_raw <-
     doc %>%
     xml2::xml_find_all(".//table") %>%
@@ -98,6 +85,21 @@ extractHistory <- function(htmlfile) {
   return(history_long_filter)
 }
 
+#' @export
+
+xtsHistory <- function(data) {
+  data_wide <-
+    data %>%
+    reshape2::dcast(date ~ wkn + var, value.var = "value")
+  rownames(data_wide) <- data_wide[["date"]]
+  data_xts <-
+    data_wide[, -1] %>%
+    xts::as.xts()
+  return(data_xts)
+}
+## xtsHistory(extractHistory_res) %>% head()
+## xtsHistory(extractHistory_res) %>% class()
+
 cleanHistoryNum <- function(x) {
   x_out <-
     x %>%
@@ -119,3 +121,4 @@ getRow <- function(tbody) {
     xml2::xml_children() %>%
     xml2::xml_text()
 }
+

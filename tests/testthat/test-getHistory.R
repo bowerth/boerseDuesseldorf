@@ -41,4 +41,7 @@ test_that("check if History exists", {
   extractHistory_res[1:2, ] %>%
     expect_equal(extractHistory_expect)
 
+  ## extractHistory_res %>%
+  ##   xtsHistory()
+
 })
