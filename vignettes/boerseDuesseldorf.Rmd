@@ -16,11 +16,11 @@ library(tidyr)
 ## destdir_provider <- "../inst/extdata/provider"
 ## destdir_fonds <- "../inst/extdata/fonds"
 ## destdir_summary <- "../inst/extdata/summary"
-## destdir_history <- "../inst/extdata/history"
+destdir_history <- "../inst/extdata/history"
 ## export_file_provider <- "../inst/extdata/provider.tsv"
 ## export_file_fonds <- "../inst/extdata/fonds.tsv"
 ## export_file_summary <- "../inst/extdata/summary.rda"
-## export_file_history <- "../inst/extdata/history.rda"
+export_file_history <- "../inst/extdata/history.rda"
 ## for pkgdown
 ## destdir_provider <- system.file("extdata", "provider", package = "boerseDuesseldorf")
 export_file_provider <-
@@ -135,7 +135,7 @@ save(history_df_sorted,
      file = export_file_history)
 ```
 
-```{r extract_history_mc, eval=FALSE}
+```{r extract_history_mc, eval=TRUE}
 ## https://cran.r-project.org/web/packages/doMC/vignettes/gettingstartedMC.pdf
 library(doMC)
 registerDoMC(4)
