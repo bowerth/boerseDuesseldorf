@@ -23,10 +23,43 @@ extractHistory <- function(htmlfile) {
 
   wkn <- titleWkn(doc)
 
-  history_table <-
+  ## Sys.time()
+  ## history_table <-
+  ##   doc %>%
+  ##   rvest::html_table() %>%
+  ##   .[[1]]
+  ## Sys.time()
+
+  ## doc %>%
+  ## xml2::xml_find_all(".//table") %>%
+  ## xml2::xml_children() %>%
+  ## .[[2]] %>% # tbody
+  ## xml2::xml_contents()
+
+  html_table_raw <-
     doc %>%
-    rvest::html_table() %>%
-    .[[1]]
+    xml2::xml_find_all(".//table") %>%
+    xml2::xml_children()
+
+  theader <-
+    html_table_raw[[1]] %>%
+    xml2::xml_contents() %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+
+  tbody <-
+    html_table_raw[[2]] %>%
+    xml2::xml_contents()
+
+  row_list <-
+    lapply(tbody, getRow)
+
+  history_table <-
+    do.call(rbind.data.frame, row_list)
+
+  names(history_table) <-
+    ## c("Datum", "Eröffnung", "Tageshoch", "Tagestief", "Schluss", "Stücke")
+    theader
 
   history_table_numeric <-
     suppressWarnings(apply(history_table[,-1], 2, cleanHistoryNum))
@@ -80,3 +113,9 @@ cleanHistoryDate <- function(x) {
   return(x_out)
 }
 ## cleanHistoryDate("10.02.2017")
+
+getRow <- function(tbody) {
+  tbody %>%
+    xml2::xml_children() %>%
+    xml2::xml_text()
+}

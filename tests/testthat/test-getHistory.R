@@ -1,4 +1,6 @@
 library(boerseDuesseldorf)
+## library(testthat)
+## library(magrittr)
 context("getHistory")
 
 test_that("check if History exists", {
@@ -29,8 +31,10 @@ test_that("check if History exists", {
       stringsAsFactors = FALSE
     )
 
+  ## Sys.time()
   extractHistory_res <-
     extractHistory(htmlfile = testfile_history)
+  ## Sys.time()
 
   ## str(extractHistory_expect)
   ## str(extractHistory_res[1:2, ])
