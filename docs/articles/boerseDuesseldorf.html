@@ -50,26 +50,59 @@
       <h1>boerseDuesseldorf</h1>
                         <h4 class="author">Bo Werth</h4>
             
-            <h4 class="date">2017-02-10</h4>
+            <h4 class="date">2017-02-12</h4>
           </div>
 
     
     
 <div class="contents">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boerseDuesseldorf)
+<span class="kw">library</span>(dplyr)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyr)
 ## destdir_provider &lt;- "../inst/extdata/provider"
+## destdir_fonds &lt;- "../inst/extdata/fonds"
+## destdir_summary &lt;- "../inst/extdata/summary"
+## destdir_history &lt;- "../inst/extdata/history"
+## export_file_provider &lt;- "../inst/extdata/provider.tsv"
+## export_file_fonds &lt;- "../inst/extdata/fonds.tsv"
+## export_file_summary &lt;- "../inst/extdata/summary.rda"
+## export_file_history &lt;- "../inst/extdata/history.rda"
 ## for pkgdown
-destdir_provider &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"provider"</span>, <span class="dt">package =</span> <span class="st">"boerseDuesseldorf"</span>)</code></pre></div>
+## destdir_provider &lt;- system.file("extdata", "provider", package = "boerseDuesseldorf")
+export_file_provider &lt;-
+<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"provider.tsv"</span>, <span class="dt">package =</span> <span class="st">"boerseDuesseldorf"</span>)
+export_file_fonds &lt;-
+<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"fonds.tsv"</span>, <span class="dt">package =</span> <span class="st">"boerseDuesseldorf"</span>)
+export_file_summary &lt;-
+<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"summary.rda"</span>, <span class="dt">package =</span> <span class="st">"boerseDuesseldorf"</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## modes &lt;- c("a", "b")
 modes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"1"</span>, letters)
 <span class="kw">unlink</span>(<span class="kw">file.path</span>(destdir_provider, <span class="st">"*"</span>))
 <span class="kw"><a href="../reference/getFG.html">getFG</a></span>(<span class="dt">modes =</span> modes, <span class="dt">destdir =</span> destdir_provider)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">htmlfiles &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_provider)
-htmlfiles_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_provider, htmlfiles)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">htmlfiles_provider &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_provider)
+htmlfiles_provider_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_provider, htmlfiles_provider)
 provider_list &lt;-
-<span class="st">  </span><span class="kw">lapply</span>(htmlfiles_relpath, extractFG)
+<span class="st">  </span><span class="kw">lapply</span>(htmlfiles_provider_relpath, extractFG)
 provider_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"rbind"</span>, provider_list)
-knitr::<span class="kw">kable</span>(provider_df[<span class="dv">1</span>:<span class="dv">10</span>,])</code></pre></div>
+provider_df_sorted &lt;-
+<span class="st">  </span>provider_df %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(label)
+<span class="kw">write.table</span>(provider_df_sorted,
+            <span class="dt">file =</span> export_file_provider,
+            <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>,
+            <span class="dt">row.names =</span> <span class="ot">FALSE</span>,
+            <span class="dt">quote =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">provider_df_sorted &lt;-
+<span class="st">  </span><span class="kw">read.delim</span>(export_file_provider)
+knitr::<span class="kw">kable</span>(provider_df_sorted[<span class="dv">1</span>:<span class="dv">10</span>,])</code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">label</th>
@@ -77,47 +110,250 @@ knitr::<span class="kw">kable</span>(provider_df[<span class="dv">1</span>:<span
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">SANTANDER SICAV</td>
+<td align="left">/fonds/fondgesellschaften/3494</td>
+</tr>
+<tr class="even">
+<td align="left">1. SICAV</td>
+<td align="left">/fonds/fondgesellschaften/737</td>
+</tr>
+<tr class="odd">
+<td align="left">3 Banken Generali Invest</td>
+<td align="left">/fonds/fondgesellschaften/563</td>
+</tr>
+<tr class="even">
 <td align="left">Aachener Grundvermögen</td>
 <td align="left">/fonds/fondgesellschaften/689</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">AACHENER GRUNDVERMÖGEN Kapitalanlagegesellschaft mbH</td>
 <td align="left">/fonds/fondgesellschaften/3391</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Aberdeen Asset Management Deutschland AG</td>
 <td align="left">/fonds/fondgesellschaften/3452</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Aberdeen Global Services S.A.</td>
 <td align="left">/fonds/fondgesellschaften/3082</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Aberdeen Global SICAV</td>
 <td align="left">/fonds/fondgesellschaften/3255</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Aberdeen Immobilien Kapitalanlagegesellschaft mbH</td>
 <td align="left">/fonds/fondgesellschaften/3010</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Aberdeen Investment</td>
 <td align="left">/fonds/fondgesellschaften/517</td>
 </tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fgs &lt;-
+<span class="st">  </span>provider_df_import$url
+<span class="kw"><a href="../reference/getWKN.html">getWKN</a></span>(<span class="dt">fgs =</span> fgs, <span class="dt">destdir =</span> destdir_fonds)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">htmlfiles_fonds &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_fonds)
+htmlfiles_fonds_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_fonds, htmlfiles_fonds)
+fonds_list &lt;-
+<span class="st">  </span><span class="kw">lapply</span>(htmlfiles_fonds_relpath, extractWKN)
+fonds_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"rbind"</span>, fonds_list)
+fonds_df_sorted &lt;-
+<span class="st">  </span>fonds_df %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(label)
+<span class="kw">write.table</span>(fonds_df_sorted,
+            <span class="dt">file =</span> export_file_fonds,
+            <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>,
+            <span class="dt">row.names =</span> <span class="ot">FALSE</span>,
+            <span class="dt">quote =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fonds_df_sorted &lt;-
+<span class="st">  </span><span class="kw">read.delim</span>(export_file_fonds)
+knitr::<span class="kw">kable</span>(fonds_df_sorted[<span class="dv">1</span>:<span class="dv">10</span>,])</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">label</th>
+<th align="left">url</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">3 Banken Emerging Market Bond-Mix</td>
+<td align="left">/fonds/wkn/937603</td>
+</tr>
 <tr class="even">
-<td align="left">Aberdeen Liquidity Fund (Lux) SICAV</td>
-<td align="left">/fonds/fondgesellschaften/3489</td>
+<td align="left">3 Banken Euro Bond-Mix</td>
+<td align="left">/fonds/wkn/971930</td>
 </tr>
 <tr class="odd">
-<td align="left">ABN AMRO Multi-Manager Funds</td>
-<td align="left">/fonds/fondgesellschaften/3573</td>
+<td align="left">3 BANKEN EUROPA STOCK MIX</td>
+<td align="left">/fonds/wkn/989378</td>
 </tr>
 <tr class="even">
-<td align="left">Access Fund</td>
-<td align="left">/fonds/fondgesellschaften/3007</td>
+<td align="left">3 BANKEN NACHHALTIGKEITSFONDS</td>
+<td align="left">/fonds/wkn/A0DJZ8</td>
+</tr>
+<tr class="odd">
+<td align="left">3 BANKEN PORTFOLIO MIX</td>
+<td align="left">/fonds/wkn/165496</td>
+</tr>
+<tr class="even">
+<td align="left">3 Banken Portfolio-Mix</td>
+<td align="left">/fonds/wkn/937600</td>
+</tr>
+<tr class="odd">
+<td align="left">3 BANKEN SHORT TERM EUROBOND MIX</td>
+<td align="left">/fonds/wkn/989697</td>
+</tr>
+<tr class="even">
+<td align="left">3 BANKEN STAATSANLEIHEN FONDS</td>
+<td align="left">/fonds/wkn/A0ER7P</td>
+</tr>
+<tr class="odd">
+<td align="left">3 BANKEN STERREICH FONDS</td>
+<td align="left">/fonds/wkn/255243</td>
+</tr>
+<tr class="even">
+<td align="left">4Q SMART POWER</td>
+<td align="left">/fonds/wkn/A0RHHC</td>
 </tr>
 </tbody>
 </table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getSummary</span>(<span class="dt">wkns =</span> fonds_df_sorted$url, <span class="dt">destdir =</span> destdir_summary)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">htmlfiles_summary &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_summary)
+htmlfiles_summary_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_summary, htmlfiles_summary)
+summary_list &lt;-
+<span class="st">  </span><span class="kw">lapply</span>(htmlfiles_summary_relpath, extractSummary)
+summary_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"rbind"</span>, summary_list)
+summary_df_sorted &lt;-
+<span class="st">  </span>summary_df %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(wkn)
+<span class="kw">save</span>(summary_df_sorted,
+     <span class="dt">file =</span> export_file_summary)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="dt">file =</span> export_file_summary)
+summary_df_sorted %&gt;%
+<span class="st">  </span>tbl_df %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(period %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">"1y"</span>, <span class="st">"3y"</span>, <span class="st">"5y"</span>)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(var %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">"performance"</span>)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(wkn, var, period, value) %&gt;%
+<span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> period, <span class="dt">value =</span> <span class="st">"value"</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(<span class="st">`</span><span class="dt">5y</span><span class="st">`</span>)) %&gt;%
+<span class="st">  </span><span class="kw">top_n</span>(<span class="dv">10</span>) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<pre><code>## Selecting by 5y</code></pre>
+<table class="table">
+<thead><tr class="header">
+<th align="left">wkn</th>
+<th align="left">var</th>
+<th align="right">1y</th>
+<th align="right">3y</th>
+<th align="right">5y</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">676338</td>
+<td align="left">performance</td>
+<td align="right">0.2519</td>
+<td align="right">0.3801</td>
+<td align="right">1.6799</td>
+</tr>
+<tr class="even">
+<td align="left">972768</td>
+<td align="left">performance</td>
+<td align="right">0.4326</td>
+<td align="right">1.0096</td>
+<td align="right">1.6557</td>
+</tr>
+<tr class="odd">
+<td align="left">801498</td>
+<td align="left">performance</td>
+<td align="right">0.3747</td>
+<td align="right">0.8687</td>
+<td align="right">1.5279</td>
+</tr>
+<tr class="even">
+<td align="left">938951</td>
+<td align="left">performance</td>
+<td align="right">0.2221</td>
+<td align="right">0.3288</td>
+<td align="right">1.5004</td>
+</tr>
+<tr class="odd">
+<td align="left">926085</td>
+<td align="left">performance</td>
+<td align="right">0.4284</td>
+<td align="right">0.6668</td>
+<td align="right">1.3716</td>
+</tr>
+<tr class="even">
+<td align="left">LYX0AD</td>
+<td align="left">performance</td>
+<td align="right">0.5846</td>
+<td align="right">0.3230</td>
+<td align="right">1.3442</td>
+</tr>
+<tr class="odd">
+<td align="left">973280</td>
+<td align="left">performance</td>
+<td align="right">0.3180</td>
+<td align="right">0.7011</td>
+<td align="right">1.3379</td>
+</tr>
+<tr class="even">
+<td align="left">986390</td>
+<td align="left">performance</td>
+<td align="right">0.3175</td>
+<td align="right">0.6998</td>
+<td align="right">1.3288</td>
+</tr>
+<tr class="odd">
+<td align="left">120873</td>
+<td align="left">performance</td>
+<td align="right">0.4880</td>
+<td align="right">0.7234</td>
+<td align="right">1.3135</td>
+</tr>
+<tr class="even">
+<td align="left">986729</td>
+<td align="left">performance</td>
+<td align="right">0.4477</td>
+<td align="right">0.5871</td>
+<td align="right">1.3087</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/getHistory.html">getHistory</a></span>(<span class="dt">wkns =</span> fonds_df_sorted$url, <span class="dt">destdir =</span> destdir_history)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">htmlfiles_history &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_history)
+htmlfiles_history_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_history, htmlfiles_history)
+history_list &lt;-
+<span class="st">  </span><span class="kw">lapply</span>(htmlfiles_history_relpath, extractHistory)
+history_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"rbind"</span>, history_list)
+history_df_sorted &lt;-
+<span class="st">  </span>history_df %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(wkn, <span class="kw">desc</span>(date))
+<span class="kw">save</span>(history_df_sorted,
+     <span class="dt">file =</span> export_file_history)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## https://cran.r-project.org/web/packages/doMC/vignettes/gettingstartedMC.pdf
+<span class="kw">library</span>(doMC)
+<span class="kw">registerDoMC</span>(<span class="dv">4</span>)
+## foreach(i=1:3) %dopar% sqrt(i)
+htmlfiles_history &lt;-<span class="st"> </span><span class="kw">list.files</span>(destdir_history)
+htmlfiles_history_relpath &lt;-<span class="st"> </span><span class="kw">file.path</span>(destdir_history, htmlfiles_history)
+history_list &lt;-
+<span class="st">  </span><span class="kw">foreach</span>(<span class="dt">wkn =</span> htmlfiles_history_relpath) %dopar%
+<span class="st">  </span><span class="kw">extractHistory</span>(<span class="dt">htmlfile =</span> wkn)
+history_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"rbind"</span>, history_list)
+history_df_sorted &lt;-
+<span class="st">  </span>history_df %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(wkn, <span class="kw">desc</span>(date))
+<span class="kw">save</span>(history_df_sorted,
+     <span class="dt">file =</span> export_file_history)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"Rmpi"</span>)
+<span class="kw">install.packages</span>(<span class="st">"doMPI"</span>, <span class="dt">dependencies=</span><span class="ot">TRUE</span>)
+<span class="kw">library</span>(doMPI)
+cl &lt;-<span class="st"> </span><span class="kw">startMPIcluster</span>(<span class="dt">count=</span><span class="dv">2</span>)
+<span class="kw">registerDoMPI</span>(cl
+<span class="kw">foreach</span>(<span class="dt">i=</span><span class="dv">1</span>:<span class="dv">3</span>) %dopar%<span class="st"> </span><span class="kw">sqrt</span>(i)
+<span class="kw">closeCluster</span>(cl)</code></pre></div>
 </div>
   </div>
 

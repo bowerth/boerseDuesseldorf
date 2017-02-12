@@ -2,5 +2,11 @@
 
 export(downloadHtml)
 export(extractFG)
+export(extractHistory)
+export(extractSummary)
+export(extractWKN)
 export(getFG)
+export(getHistory)
+export(getSummary)
+export(getWKN)
 importFrom(magrittr,"%>%")
